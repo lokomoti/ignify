@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "ignify"
+version = "0.1.0"
+description = ""
+authors = ["Jakub Nedoma <nedoma.jakub@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+click = "^8.1.7"
+pydantic = "^2.9.2"
+pyyaml = "^6.0.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.7.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+ignify = "ignify.main:cli"
+
+[tool.ruff]
+line-length = 79
+target-version = "py313"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+extend-select = ["I"]

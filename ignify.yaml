@@ -1,0 +1,3 @@
+transpiler:
+  ignition_project: "samplequickstart"
+  python_project: "app"
