@@ -6,7 +6,6 @@ Ignify is a Python-based transpiler designed to convert Python code to ignition 
 
 - Transpile Python code to ignition and ignition code to Python
 - Easy to use command-line interface
-- Supports various constructs in both languages
 
 ## Installation
 
@@ -15,8 +14,6 @@ To install Ignify, use pip:
 ```bash
 pip install ignify
 ```
-
-## Usage
 
 ## Usage
 
