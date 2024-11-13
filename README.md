@@ -18,7 +18,22 @@ pip install ignify
 
 ## Usage
 
-TODO
+## Usage
+
+To use Ignify, you can use the following commands:
+
+```bash
+ignify [OPTIONS] COMMAND [ARGS]...
+```
+
+Available Commands:
+- `txp`: Transpile Python modules to Ignition modules.
+- `compare`: Compare Python and Ignition modules.
+- `list-python-modules`: List python modules in the project.
+- `list-ignition-modules`: List Ignition modules in the Ignition project.
+- `check-config`: Find and check the config. Resolve file paths.
+- `write-default-config`: Write default config.
+
 
 ## Contributing
 

@@ -1,7 +1,7 @@
 import click
-from .transpiler import commands
 
 from . import config
+from .transpiler import commands
 
 
 @click.group()

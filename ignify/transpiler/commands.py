@@ -8,10 +8,15 @@ from .. import config
 from . import transpiler as ts
 
 
-def transpile(config: config.ResolvedConfig):
+@click.command(
+    name="txp", short_help="Transpile Python modules to Ignition modules."
+)
+def transpiler():
     """Transpile Python modules to Ignition modules."""
-    python_modules = ts.get_python_modules(config)
-    ignition_modules = ts.get_ignition_modules(config)
+    conf = config.get_config()
+
+    python_modules = ts.get_python_modules(conf)
+    ignition_modules = ts.get_ignition_modules(conf)
 
     missing_in_ignition, missing_in_python = ts.compare_modules(
         python_modules, ignition_modules
@@ -25,15 +30,6 @@ def transpile(config: config.ResolvedConfig):
 
     asyncio.run(ts.write_ignition_modules(missing_in_ignition))
     click.echo(click.style("Transpiled modules", fg="green"))
-
-
-@click.command(
-    name="txp", short_help="Transpile Python modules to Ignition modules."
-)
-def transpiler():
-    """Transpile Python modules to Ignition modules."""
-    conf = config.get_config()
-    transpile(conf)
 
 
 @click.command()

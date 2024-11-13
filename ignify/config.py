@@ -52,20 +52,6 @@ def _read_config(path: Path):
         raise FileNotFoundError(error, message) from error
 
 
-@click.command()
-def write_default_config(path: Path = Path.cwd()) -> None:
-    """Write default config to file."""
-
-    config = Config(
-        transpiler=Transpiler(
-            ignition_project="path/to/ignition/project",
-            python_project="path/to/python/project",
-        )
-    )
-    with open(path, "w") as file:
-        yaml.dump(config.model_dump(), file)
-
-
 def _find_file(file) -> Path:
     """Find file in current location or in parent folders location."""
 
@@ -141,3 +127,17 @@ def check_config() -> None:
         click.echo(
             "Please create a config file using 'ignify config write-default-config'."
         )
+
+
+@click.command()
+def write_default_config(path: Path = Path.cwd()) -> None:
+    """Write default config to file."""
+
+    config = Config(
+        transpiler=Transpiler(
+            ignition_project="path/to/ignition/project",
+            python_project="path/to/python/project",
+        )
+    )
+    with open(path, "w") as file:
+        yaml.dump(config.model_dump(), file)
