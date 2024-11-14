@@ -28,6 +28,11 @@ def transpiler(no_rm: bool):
         ts.compare_modules(python_modules, ignition_modules)
     )
 
+    if no_rm:
+        click.echo(click.style("Skipping Ignition module deletion", fg="blue"))
+    else:
+        asyncio.run(ts.delete_ignition_modules(missing_in_python))
+
     different_content = asyncio.run(ts.deep_compare_modules(matching_modules))
     modules_to_copy = missing_in_ignition | set(different_content)
 
@@ -38,7 +43,12 @@ def transpiler(no_rm: bool):
     click.echo(click.style("Transpiling modules", fg="blue"))
 
     asyncio.run(ts.write_ignition_modules(modules_to_copy))
-    click.echo(click.style(f"Transpiled {len(modules_to_copy)}", fg="green"))
+    click.echo(
+        click.style(
+            f"Transpiled {len(modules_to_copy) + len(missing_in_python)} modules.",
+            fg="green",
+        )
+    )
 
 
 @click.command()

@@ -2,6 +2,7 @@
 
 import asyncio
 import filecmp
+import shutil
 from dataclasses import dataclass
 from enum import StrEnum, auto
 from pathlib import Path
@@ -109,7 +110,24 @@ def _write_ignition_module(module: Module):
 
 async def write_ignition_module(module: Module):
     """Write Ignition module."""
+    print("writing ignition module")
     await asyncio.to_thread(_write_ignition_module, module)
+
+
+async def _delete_ignition_module(module: Module) -> None:
+    """Delete Ignition module."""
+    await asyncio.to_thread(
+        shutil.rmtree, str(module.ignition_abs_path.parent)
+    )
+
+
+async def delete_ignition_modules(modules: Iterable[Module]) -> None:
+    """Delete Ignition modules."""
+    tasks = [
+        asyncio.create_task(_delete_ignition_module(module))
+        for module in modules
+    ]
+    await asyncio.gather(*tasks)
 
 
 async def write_ignition_modules(modules: Iterable[Module]):
