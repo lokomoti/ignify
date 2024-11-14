@@ -1,10 +1,11 @@
 """Transpiler module."""
 
 import asyncio
+import filecmp
 from dataclasses import dataclass
 from enum import StrEnum, auto
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Optional
 
 from .. import config
 
@@ -120,12 +121,43 @@ async def write_ignition_modules(modules: Iterable[Module]):
 
 def compare_modules(
     python_modules: list[Module], ignition_modules: list[Module]
-) -> tuple[set[Module], set[Module]]:
+) -> tuple[set[Module], set[Module], set[Module]]:
     """Compare Python and Ignition modules."""
-    python_modules = {module for module in python_modules}
-    ignition_modules = {module for module in ignition_modules}
+    python_modules = set(python_modules)
+    ignition_modules = set(ignition_modules)
 
     missing_in_ignition = python_modules - ignition_modules
     missing_in_python = ignition_modules - python_modules
+    matching_modules = python_modules & ignition_modules
 
-    return missing_in_ignition, missing_in_python
+    return missing_in_ignition, missing_in_python, matching_modules
+
+
+async def _deep_compare_module(module: Module) -> Optional[Module]:
+    """Deep compare module.
+
+    Returns the module if the content does not match, otherwise None.
+    """
+    is_same = await asyncio.to_thread(
+        filecmp.cmp,
+        module.python_abs_path,
+        module.ignition_abs_path,
+        shallow=False,
+    )
+    return None if is_same else module
+
+
+async def deep_compare_modules(modules: list[Module]) -> list[Module]:
+    """Deep compare modules.
+
+    Args:
+        modules (list[Module]): Modules to compare.
+
+    Returns:
+        list[Module]: Modules that have different content.
+    """
+    tasks = [_deep_compare_module(module) for module in modules]
+    results = await asyncio.gather(*tasks)
+    different_modules = [module for module in results if module is not None]
+
+    return different_modules
